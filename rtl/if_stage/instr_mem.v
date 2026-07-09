@@ -1,14 +1,14 @@
 module instr_mem (
-    input  [31:0]  address,
-    output [31:0]  instruction
+    input  [31:0] address_n,
+    output [31:0] instruction_o
 );
     parameter MAX_SIZE = 1024 ;
-    reg [31:0] memory [0:MAX_SIZE];
+    reg [31:0] memory [0:MAX_SIZE-1];
 
     initial begin
-        $readmemh("docs/progeam.hex", memory);
+        $readmemh("instruction.hex", memory);
     end
 
-    assign instruction = memory[address[11:2]];
+    assign instruction_o = memory[address_n[11:2]];
 
 endmodule
