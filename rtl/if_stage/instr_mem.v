@@ -1,8 +1,8 @@
 module instr_mem (
-    input  [31:0] address_n,
-    output [31:0] instruction_o
+    input      [31:0] address_n,
+    output reg [31:0] instruction_o
 );
-    parameter MAX_SIZE = 1024 ;
+    localparam MAX_SIZE = 1024 ;
     reg [31:0] memory [0:MAX_SIZE-1];
 
     initial begin
