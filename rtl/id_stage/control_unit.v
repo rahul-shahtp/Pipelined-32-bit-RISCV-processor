@@ -9,15 +9,15 @@ module control_unit (
     output reg       jump,
     output reg [1:0] ALUopCode
 );
-    parameter OP_RTYPE  = 7'b0110011;
-    parameter OP_ITYPE  = 7'b0010011;
-    parameter OP_LOAD   = 7'b0000011;
-    parameter OP_STORE  = 7'b0100011;
-    parameter OP_BRANCH = 7'b1100011;
-    parameter OP_JAL    = 7'b1101111;
-    parameter OP_JALR   = 7'b1100111;
-    parameter OP_LUI    = 7'b0110111;
-    parameter OP_AUIPC  = 7'b0010111;
+    localparam OP_RTYPE  = 7'b0110011;
+    localparam OP_ITYPE  = 7'b0010011;
+    localparam OP_LOAD   = 7'b0000011;
+    localparam OP_STORE  = 7'b0100011;
+    localparam OP_BRANCH = 7'b1100011;
+    localparam OP_JAL    = 7'b1101111;
+    localparam OP_JALR   = 7'b1100111;
+    localparam OP_LUI    = 7'b0110111;
+    localparam OP_AUIPC  = 7'b0010111;
 
     always @(*) begin
         RegWrite  = 1'b0;
