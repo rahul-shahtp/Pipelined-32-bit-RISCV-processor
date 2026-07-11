@@ -13,8 +13,10 @@ module register_file (
     reg [31:0] register [0:31];
 
     //register 0 hardwired to zero
-    assign rs1_data = (rs1_addr == 5'b0) ? 32'h0 : register[rs1_addr];
-    assign rs2_data = (rs2_addr == 5'b0) ? 32'h0 : register[rs2_addr];
+    always @(*) begin
+        assign rs1_data = (rs1_addr == 5'b0) ? 32'h0 : register[rs1_addr];
+        assign rs2_data = (rs2_addr == 5'b0) ? 32'h0 : register[rs2_addr];
+    end
 
     integer i;
 
