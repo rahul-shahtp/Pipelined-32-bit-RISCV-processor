@@ -1,7 +1,8 @@
 module id_to_ex_reg (
     input             clk,
     input             rst,
-    input             stall,
+    input             bubble,
+    input             hold,
     input             flush,
 
     //data from ID stage
@@ -16,6 +17,8 @@ module id_to_ex_reg (
     input      [31:0] imm_id,
     input      [2:0]  funct3_id,
     input             funct7_5thBIT_id,
+    input             is_mul_div_id,
+    input      [2:0]  mul_div_op_id,
 
     // control unit input 
 
@@ -39,6 +42,8 @@ module id_to_ex_reg (
     output reg [31:0] imm_ex,
     output reg [2:0]  funct3_ex,
     output reg        funct7_5thBIT_ex,
+    output reg        is_mul_div_ex,
+    output reg [2:0]  mul_div_op_ex,
 
     output reg        RegWrite_ex,
     output reg        MemWrite_ex,
@@ -63,6 +68,8 @@ module id_to_ex_reg (
             imm_ex           <= 32'h0;
             funct3_ex        <= 3'h0;
             funct7_5thBIT_ex <= 1'b0;
+            mul_div_op_ex    <= 3'h0;
+            is_mul_div_ex    <= 1'b0;
 
             RegWrite_ex      <= 1'b0;
             MemWrite_ex      <= 1'b0;
@@ -85,6 +92,8 @@ module id_to_ex_reg (
             imm_ex           <= 32'h0;
             funct3_ex        <= 3'h0;
             funct7_5thBIT_ex <= 1'b0;
+            is_mul_div_ex    <= 1'b0;
+            mul_div_op_ex    <= 3'h0;
 
             RegWrite_ex      <= 1'b0;
             MemWrite_ex      <= 1'b0;
@@ -97,7 +106,7 @@ module id_to_ex_reg (
             
         end
 
-        else if (stall) begin
+        else if (hold) begin
             pc_ex            <= pc_ex;
             pc_plus4_ex      <= pc_plus4_ex;
             rs1_ex           <= rs1_ex;
@@ -108,6 +117,32 @@ module id_to_ex_reg (
             imm_ex           <= imm_ex;
             funct3_ex        <= funct3_ex;
             funct7_5thBIT_ex <= funct7_5thBIT_ex;
+            is_mul_div_ex    <= is_mul_div_ex;
+            mul_div_op_ex    <= mul_div_op_ex;
+
+            RegWrite_ex      <= RegWrite_ex;
+            MemWrite_ex      <= MemWrite_ex;
+            MemtoReg_ex      <= MemtoReg_ex;
+            ALUsrc_ex        <= ALUsrc_ex;
+            branch_ex        <= branch_ex; 
+            jump_ex          <= jump_ex;    
+            MemRead_ex       <= MemRead_ex; 
+            ALUopCode_ex     <= ALUopCode_ex;
+        end
+
+        else if (bubble) begin
+            pc_ex            <= pc_id;
+            pc_plus4_ex      <= pc_plus4_id;
+            rs1_ex           <= rs1_id;
+            rs2_ex           <= rs2_id;
+            rs1_data_ex      <= rs1_data_id;
+            rs2_data_ex      <= rs2_data_id;
+            rd_ex            <= rd_id;
+            imm_ex           <= imm_id;
+            funct3_ex        <= funct3_id;
+            funct7_5thBIT_ex <= funct7_5thBIT_id;
+            is_mul_div_ex    <= 1'b0;
+            mul_div_op_ex    <= 3'h0;
 
             RegWrite_ex      <= 1'b0;
             MemWrite_ex      <= 1'b0;
@@ -117,6 +152,7 @@ module id_to_ex_reg (
             jump_ex          <= 1'b0;
             MemRead_ex       <= 1'b0;
             ALUopCode_ex     <= 2'b00;
+            
         end
 
         else begin
@@ -130,6 +166,8 @@ module id_to_ex_reg (
             imm_ex           <= imm_id;
             funct3_ex        <= funct3_id;
             funct7_5thBIT_ex <= funct7_5thBIT_id;
+            is_mul_div_ex    <= is_mul_div_id;
+            mul_div_op_ex    <= mul_div_op_id;
 
             RegWrite_ex      <= RegWrite_id;
             MemWrite_ex      <= MemWrite_id;

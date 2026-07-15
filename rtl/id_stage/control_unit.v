@@ -1,5 +1,7 @@
 module control_unit (
     input      [6:0] opcode,
+    input      [2:0] funct3,
+    input      [6:0] funct7,
     output reg       RegWrite,
     output reg       MemRead,
     output reg       MemWrite,
@@ -7,6 +9,8 @@ module control_unit (
     output reg       ALUsrc,
     output reg       branch,
     output reg       jump,
+    output reg       is_mul_div,
+    output reg [2:0] mul_div_op,
     output reg [1:0] ALUopCode
 );
     localparam OP_RTYPE  = 7'b0110011;
@@ -19,21 +23,30 @@ module control_unit (
     localparam OP_LUI    = 7'b0110111;
     localparam OP_AUIPC  = 7'b0010111;
 
+    wire is_m_ext = (ALUopCode == 7'b011011) && (funt7 == 7'b0000001);
+
     always @(*) begin
-        RegWrite  = 1'b0;
-        MemRead   = 1'b0;
-        MemWrite  = 1'b0;
-        MemtoReg  = 1'b0;
-        ALUsrc    = 1'b0;
-        branch    = 1'b0;
-        jump      = 1'b0;
-        ALUopCode = 2'b00;
+        RegWrite   = 1'b0;
+        MemRead    = 1'b0;
+        MemWrite   = 1'b0;
+        MemtoReg   = 1'b0;
+        ALUsrc     = 1'b0;
+        branch     = 1'b0;
+        jump       = 1'b0;
+        ALUopCode  = 2'h0;
+        is_mul_div = 1'b0;
+        mul_div_op = 3'h0;
 
         case (opcode)
             OP_RTYPE : begin
                 RegWrite  = 1'b1;
                 ALUsrc    = 1'b0;
                 ALUopCode = 2'b10;
+
+                if (is_mul_div) begin
+                    is_mul_div = 1'b1;
+                    mul_div_op = funct3;
+                end
             end
 
             OP_ITYPE : begin

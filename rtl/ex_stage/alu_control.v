@@ -1,7 +1,8 @@
 module alu_control (
-    input      [2:0] ALUopCode,
+    input      [1:0] ALUopCode,
     input      [2:0] funct3,
     input            funct7_5thBIT,
+    input            is_mul_div,
     output reg [3:0] alu_op
 );
 
@@ -17,7 +18,12 @@ module alu_control (
     localparam ALU_SLTU = 4'b1001;
 
     always @(*) begin
-        case (ALUopCode)
+
+        if (is_mul_div) begin
+            alu_op = ALU_ADD;
+        end else begin
+
+            case (ALUopCode)
 
             2'b00 : alu_op = ALU_ADD;
 
@@ -41,7 +47,9 @@ module alu_control (
             end
 
             default : alu_op = ALU_ADD;
-        endcase
+            
+            endcase
+        end
     end
 
 endmodule

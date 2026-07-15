@@ -1,6 +1,6 @@
 module if_to_id_reg (
     input             clk_n,
-    input             stall,
+    input             pc_if_stall,
     input             rst,
     input             flush,
     input      [31:0] pc_plus4_n,
@@ -19,7 +19,7 @@ module if_to_id_reg (
             pc_plus4_o    <= 32'b0;
             instruction_o <= NOP;
         end
-        else if (stall) begin
+        else if (pc_if_stall) begin
             pc_plus4_o    <= pc_plus4_o;
             instruction_o <= instruction_o;
         end

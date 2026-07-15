@@ -1,7 +1,7 @@
 module pc_reg (
     input             clk_n,
     input             rst,
-    input             stall,
+    input             pc_if_stall,
     input      [31:0] pc_in,
     output reg [31:0] pc_out
 );
@@ -9,7 +9,7 @@ module pc_reg (
     always @(posedge clk_n or posedge rst) begin
         if (rst) begin
             pc_out <= 32'h00;
-        end else if (!stall) begin
+        end else if (!pc_if_stall) begin
             pc_out <= pc_in;
         end
     end
