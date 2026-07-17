@@ -1,5 +1,5 @@
 module pc_reg (
-    input             clk_n,
+    input             clk,
     input             rst,
     input             pc_if_stall,
     input      [31:0] pc_in,

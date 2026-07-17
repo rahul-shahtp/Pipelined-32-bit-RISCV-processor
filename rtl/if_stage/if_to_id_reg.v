@@ -1,5 +1,5 @@
 module if_to_id_reg (
-    input             clk_n,
+    input             clk,
     input             pc_if_stall,
     input             rst,
     input             flush,
