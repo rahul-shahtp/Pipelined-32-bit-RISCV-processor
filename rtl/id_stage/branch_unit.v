@@ -24,8 +24,8 @@ module branch_unit (
                 BNE  : branch_taken  = (rs1_data != rs2_data);
                 BLT  : branch_taken  = ($signed(rs1_data) < $signed(rs2_data));
                 BGE  : branch_taken  = ($signed(rs1_data) >= $signed(rs2_data));
-                BLTU : branch_taken  = ($unsigned(rs1_data) < $unsigned(rs2_data));
-                BGEU : branch_taken  = ($unsigned(rs1_data) >= $unsigned(rs2_data));
+                BLTU : branch_taken  = (rs1_data < rs2_data);
+                BGEU : branch_taken  = (rs1_data >= rs2_data);
 
                 default : branch_taken = 1'b0;
             endcase
@@ -35,4 +35,3 @@ module branch_unit (
     assign branch_target = pc + imm ;
 
 endmodule
-

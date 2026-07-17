@@ -19,6 +19,7 @@ module id_to_ex_reg (
     input             funct7_5thBIT_id,
     input             is_mul_div_id,
     input      [2:0]  mul_div_op_id,
+    input      [6:0]  opcode_id,
 
     // control unit input 
 
@@ -52,7 +53,8 @@ module id_to_ex_reg (
     output reg        branch_ex,
     output reg        jump_ex,
     output reg        MemRead_ex,
-    output reg [1:0]  ALUopCode_ex
+    output reg [1:0]  ALUopCode_ex,
+    output reg [6:0]  opcode_ex
 
 );
 
@@ -79,6 +81,7 @@ module id_to_ex_reg (
             jump_ex          <= 1'b0;
             MemRead_ex       <= 1'b0;
             ALUopCode_ex     <= 2'b00;
+            opcode_ex       <= 7'h0;
         end
 
         else if (flush) begin
@@ -103,6 +106,7 @@ module id_to_ex_reg (
             jump_ex          <= 1'b0;
             MemRead_ex       <= 1'b0;
             ALUopCode_ex     <= 2'b00;
+            opcode_ex       <= 7'h0;
             
         end
 
@@ -128,6 +132,7 @@ module id_to_ex_reg (
             jump_ex          <= jump_ex;    
             MemRead_ex       <= MemRead_ex; 
             ALUopCode_ex     <= ALUopCode_ex;
+            opcode_ex        <= opcode_ex;
         end
 
         else if (bubble) begin
@@ -152,6 +157,7 @@ module id_to_ex_reg (
             jump_ex          <= 1'b0;
             MemRead_ex       <= 1'b0;
             ALUopCode_ex     <= 2'b00;
+            opcode_ex       <= 7'h0;
             
         end
 
@@ -177,8 +183,8 @@ module id_to_ex_reg (
             jump_ex          <= jump_id;
             MemRead_ex       <= MemRead_id;
             ALUopCode_ex     <= ALUopCode_id;
+            opcode_ex        <= opcode_id;
         end
     end
 
 endmodule
-

@@ -10,7 +10,7 @@ module if_to_id_reg (
 );
     localparam NOP = 32'h00000013; // addi x0, x0, 0
 
-    always @(posedge clk_n or posedge rst) begin
+    always @(posedge clk or posedge rst) begin
         if (rst) begin
             pc_plus4_o    <= 32'b0;
             instruction_o <= NOP;
@@ -29,5 +29,4 @@ module if_to_id_reg (
         end
     end
 endmodule
-
 

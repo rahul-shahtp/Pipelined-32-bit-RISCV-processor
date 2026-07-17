@@ -23,8 +23,6 @@ module control_unit (
     localparam OP_LUI    = 7'b0110111;
     localparam OP_AUIPC  = 7'b0010111;
 
-    wire is_m_ext = (ALUopCode == 7'b011011) && (funt7 == 7'b0000001);
-
     always @(*) begin
         RegWrite   = 1'b0;
         MemRead    = 1'b0;
@@ -43,7 +41,7 @@ module control_unit (
                 ALUsrc    = 1'b0;
                 ALUopCode = 2'b10;
 
-                if (is_mul_div) begin
+                if (funct7 == 7'b0000001) begin
                     is_mul_div = 1'b1;
                     mul_div_op = funct3;
                 end
@@ -101,4 +99,3 @@ module control_unit (
         endcase
     end
 endmodule
-

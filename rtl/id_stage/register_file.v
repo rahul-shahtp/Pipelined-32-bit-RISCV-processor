@@ -12,10 +12,10 @@ module register_file (
 
     reg [31:0] register [0:31];
 
-    //register 0 hardwired to zero
+    // register 0 is hardwired to zero
     always @(*) begin
-        assign rs1_data = (rs1_addr == 5'b0) ? 32'h0 : register[rs1_addr];
-        assign rs2_data = (rs2_addr == 5'b0) ? 32'h0 : register[rs2_addr];
+        rs1_data = (rs1_addr == 5'b0) ? 32'h0 : register[rs1_addr];
+        rs2_data = (rs2_addr == 5'b0) ? 32'h0 : register[rs2_addr];
     end
 
     integer i;
@@ -28,7 +28,7 @@ module register_file (
         end
         else if (RegWrite && (rd_addr != 5'b0)) begin
             register[rd_addr] <= rd_data;
-            end
         end
+    end
 
 endmodule

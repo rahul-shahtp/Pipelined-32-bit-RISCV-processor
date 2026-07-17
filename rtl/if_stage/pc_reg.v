@@ -6,7 +6,7 @@ module pc_reg (
     output reg [31:0] pc_out
 );
 
-    always @(posedge clk_n or posedge rst) begin
+    always @(posedge clk or posedge rst) begin
         if (rst) begin
             pc_out <= 32'h00;
         end else if (!pc_if_stall) begin
@@ -14,4 +14,3 @@ module pc_reg (
         end
     end
 endmodule
-
