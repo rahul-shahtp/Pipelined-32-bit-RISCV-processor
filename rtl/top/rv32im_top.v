@@ -1,7 +1,11 @@
 module rv32im_top (
     input clk,
-    input rst,
+    input rst
 );
+
+    localparam OP_JALR  = 7'b1100111;
+    localparam OP_LUI   = 7'b0110111;
+    localparam OP_AUIPC = 7'b0010111;
 
     // IF-STAGE
 
@@ -15,7 +19,7 @@ module rv32im_top (
     wire        flush;
 
     wire [31:0] pc_plus4_id;
-    wire [21:0] instruction_id;
+    wire [31:0] instruction_id;
 
     pc_reg u_pc_reg (
         .clk(clk),
@@ -27,7 +31,7 @@ module rv32im_top (
 
     pc_adder u_pc_adder (
         .pc_n(pc_if),
-        .pc_plus4_o(pc_plus4_if),
+        .pc_plus4_o(pc_plus4_if)
     );
 
     instr_mem u_instr_mem (
@@ -43,19 +47,21 @@ module rv32im_top (
         .pc_plus4_n(pc_plus4_if),
         .instruction_n(instruction_if),
         .pc_plus4_o(pc_plus4_id),
-        instruction_o(instruction_id)
+        .instruction_o(instruction_id)
     );
 
 
     // ID STAGE
 
-    wire [6:0] opcode_id        = instruction[6:0];
-    wire [4:0] rd_id            = instruction[11:7];
-    wire [2:0] funct3_id        = instruction[14:12];
-    wire [4:0] rs1_id           = instruction[19:15];
-    wire [4:0] rs2_id           = instruction[24:20];
-    wire [6:0] funct7_id        = instruction[31:25];
-    wire       funct7_5thBIT_id = instruction_id[30];
+    wire [6:0]  opcode_id        = instruction_id[6:0];
+    wire [4:0]  rd_id            = instruction_id[11:7];
+    wire [2:0]  funct3_id        = instruction_id[14:12];
+    wire [4:0]  rs1_id           = instruction_id[19:15];
+    wire [4:0]  rs2_id           = instruction_id[24:20];
+    wire [6:0]  funct7_id        = instruction_id[31:25];
+    wire        funct7_5thBIT_id = instruction_id[30];
+    wire [31:0] pc_id            = pc_plus4_id - 32'd4;
+
 
     wire [31:0] rs1_data_id;
     wire [31:0] rs2_data_id;
@@ -67,8 +73,8 @@ module rv32im_top (
     wire        branch_id;
     wire        jump_id;
     wire        is_mul_div_id;
-    wire        mul_div_op_id;
-    wire        ALUopCode_id;
+    wire [2:0]  mul_div_op_id;
+    wire [1:0]  ALUopCode_id;
     wire [31:0] imm_id;   
 
     wire [4:0]  rd_wb;
@@ -86,28 +92,34 @@ module rv32im_top (
         .RegWrite(RegWrite_wb),
         .rs1_data(rs1_data_id),
         .rs2_data(rs2_data_id)
-    )
+    );
 
     control_unit u_control_unit (
         .opcode(opcode_id),
         .funct3(funct3_id),
-        .funct7(funct3_id),
+        .funct7(funct7_id),
         .RegWrite(RegWrite_id),
         .MemRead(MemRead_id),
         .MemWrite(MemWrite_id),
         .MemtoReg(MemtoReg_id),
         .ALUsrc(ALUsrc_id),
         .branch(branch_id),
-        .jump(jump_id);
-        .is_mul_div(is_mul_div_id);
+        .jump(jump_id),
+        .is_mul_div(is_mul_div_id),
         .mul_div_op(mul_div_op_id),
         .ALUopCode(ALUopCode_id)
-    )
+    );
 
     imm_gen u_imm_gen(
         .instruction(instruction_id),
         .imm(imm_id)
     );
+
+    wire [31:0] branch_target;
+    wire [31:0] jump_target;
+    wire        branch_taken;
+    wire        jump_taken;
+    wire branch_like_id = branch_id || (jump_id && (opcode_id == OP_JALR));
 
     branch_unit u_branch_unit (
         .rs1_data(rs1_data_id),
@@ -117,15 +129,8 @@ module rv32im_top (
         .pc(pc_id),
         .imm(imm_id),
         .branch_taken(branch_taken),
-        .branch_target(branch_taken)
+        .branch_target(branch_target)
     );
-
-    wire [31:0] branch_target;
-    wire [31:0] jump_target;
-    wire        branch_taken;
-    wire        jump_taken;
-    wire branch_like_id = branch_id || (jump_id && (opcode_id == OP_JALR));
-    wire [31:0] pc_id     = pc_plus4_id - 32'd4;
 
     assign jump_taken = jump_id;
     assign jump_target = (opcode_id == OP_JALR)
@@ -155,6 +160,7 @@ module rv32im_top (
     wire mul_div_busy;
     wire mul_div_done;
     wire mul_div_start;
+    wire RegWrite_mem;
 
     hazard_detection_unit u_hazard_detection_unit (
         .id_rs1(rs1_id),
@@ -164,7 +170,7 @@ module rv32im_top (
         .ex_MemRead(ex_MemRead),
         .ex_RegWrite(RegWrite_ex),
         .mem_rd(rd_mem),
-        .mem_RegWrite(mem_RegWrite),
+        .mem_RegWrite(RegWrite_mem),
         .ex_is_mul_div(ex_is_mul_div),
         .mul_div_done(mul_div_done),
         .pc_if_stall(pc_if_stall),
@@ -260,7 +266,7 @@ module rv32im_top (
         .id_ex_rs1(rs1_ex),
         .id_ex_rs2(rs2_ex),
         .ex_mem_rd(rd_mem),
-        .ex_mem_RegWrite(mem_RegWrite),
+        .ex_mem_RegWrite(RegWrite_mem),
         .mem_wb_rd(rd_wb),
         .mem_wb_RegWrite(RegWrite_wb),
         .forward_a(forward_a),
@@ -315,7 +321,6 @@ module rv32im_top (
                        alu_result;
 
     wire [31:0] rs2_data_mem;
-    wire        RegWrite_mem;
     wire        MemRead_mem;
     wire        MemWrite_mem;
     wire        MemtoReg_mem;
@@ -393,4 +398,3 @@ module rv32im_top (
 
 
 endmodule   
-
