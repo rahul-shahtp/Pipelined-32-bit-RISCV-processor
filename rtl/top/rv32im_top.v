@@ -321,6 +321,7 @@ module rv32im_top (
                        alu_result;
 
     wire [31:0] rs2_data_mem;
+    wire [2:0]  funct3_mem;
     wire        MemRead_mem;
     wire        MemWrite_mem;
     wire        MemtoReg_mem;
@@ -337,6 +338,7 @@ module rv32im_top (
         .rst(rst),
         .alu_result_ex(ex_to_mem_alu_result_in),
         .rs2_data_ex(ex_to_mem_rs2_data_in),
+        .funct3_ex(funct3_ex),
         .rd_ex(ex_to_mem_rd_in),
         .RegWrite_ex(ex_to_mem_RegWrite_in),
         .MemRead_ex(ex_to_mem_MemRead_in),
@@ -344,6 +346,7 @@ module rv32im_top (
         .MemtoReg_ex(ex_to_mem_MemtoReg_in),
         .alu_result_mem(alu_result_mem),
         .rs2_data_mem(rs2_data_mem),
+        .funct3_mem(funct3_mem),
         .rd_mem(rd_mem),
         .RegWrite_mem(RegWrite_mem),
         .MemRead_mem(MemRead_mem),
@@ -359,6 +362,7 @@ module rv32im_top (
         .clk(clk),
         .address(alu_result_mem),
         .write_data(rs2_data_mem),
+        .funct3(funct3_mem),
         .MemRead(MemRead_mem),
         .MemWrite(MemWrite_mem),
         .read_data(read_data_mem)

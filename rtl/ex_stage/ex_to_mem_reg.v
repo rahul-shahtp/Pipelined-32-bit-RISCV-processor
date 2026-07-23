@@ -3,6 +3,7 @@ module ex_to_mem_reg (
     input             rst,
     input      [31:0] alu_result_ex,
     input      [31:0] rs2_data_ex,
+    input      [2:0]  funct3_ex,
     input      [4:0]  rd_ex,
     input             RegWrite_ex,
     input             MemRead_ex,
@@ -10,6 +11,7 @@ module ex_to_mem_reg (
     input             MemtoReg_ex,
     output reg [31:0] alu_result_mem,
     output reg [31:0] rs2_data_mem,
+    output reg [2:0]  funct3_mem,
     output reg [4:0]  rd_mem,
     output reg        RegWrite_mem,
     output reg        MemRead_mem,
@@ -22,6 +24,7 @@ module ex_to_mem_reg (
         if (rst) begin
             alu_result_mem <= 32'h0;
             rs2_data_mem   <= 32'h0;
+            funct3_mem     <= 3'h0;
             rd_mem         <= 5'h0;
             RegWrite_mem   <= 1'b0;
             MemRead_mem    <= 1'b0;
@@ -32,6 +35,7 @@ module ex_to_mem_reg (
         else begin
             alu_result_mem <= alu_result_ex;
             rs2_data_mem   <= rs2_data_ex;
+            funct3_mem     <= funct3_ex;
             rd_mem         <= rd_ex;
             RegWrite_mem   <= RegWrite_ex;
             MemRead_mem    <= MemRead_ex;
