@@ -119,7 +119,7 @@ module rv32im_top (
     wire [31:0] jump_target;
     wire        branch_taken;
     wire        jump_taken;
-    wire branch_like_id = branch_id || (jump_id && (opcode_id == OP_JALR));
+    wire        branch_like_id = branch_id || (jump_id && (opcode_id == OP_JALR));
 
     branch_unit u_branch_unit (
         .rs1_data(rs1_data_id),
@@ -132,7 +132,7 @@ module rv32im_top (
         .branch_target(branch_target)
     );
 
-    assign jump_taken = jump_id;
+    assign jump_taken  = jump_id;
     assign jump_target = (opcode_id == OP_JALR)
                        ? ((rs1_data_id + imm_id) & 32'hFFFF_FFFE)
                        : (pc_id + imm_id);
@@ -146,21 +146,21 @@ module rv32im_top (
         .pc_next(pc_next)
     );
 
-    wire hold;
-    wire bubble;
-    wire [4:0] rs1_ex;
-    wire [4:0] rs2_ex;
-    wire [4:0] rd_ex;
-    wire [4:0] rd_mem;
-    wire mem_RegWrite;
-    wire ex_MemRead;
+    wire        hold;
+    wire        bubble;
+    wire [4:0]  rs1_ex;
+    wire [4:0]  rs2_ex;
+    wire [4:0]  rd_ex;
+    wire [4:0]  rd_mem;
+    wire        mem_RegWrite;
+    wire        ex_MemRead;
     wire [31:0] alu_result_mem;
-    wire mem_MemRead;
-    wire ex_is_mul_div;
-    wire mul_div_busy;
-    wire mul_div_done;
-    wire mul_div_start;
-    wire RegWrite_mem;
+    wire        mem_MemRead;
+    wire        ex_is_mul_div;
+    wire        mul_div_busy;
+    wire        mul_div_done;
+    wire        mul_div_start;
+    wire        RegWrite_mem;
 
     hazard_detection_unit u_hazard_detection_unit (
         .id_rs1(rs1_id),
@@ -250,8 +250,8 @@ module rv32im_top (
 
     // EX STAGE
 
-    wire [1:0] forward_a;
-    wire [1:0] forward_b;
+    wire [1:0]  forward_a;
+    wire [1:0]  forward_b;
     wire [31:0] forwarded_rs1_data;
     wire [31:0] forwarded_rs2_data;
     wire [31:0] ex_operand_a;
@@ -372,7 +372,7 @@ module rv32im_top (
     wire [31:0] read_data_wb;
     wire        MemtoReg_wb;
     wire [31:0] wb_alu_result_in = hold ? alu_result_wb : alu_result_mem;
-    wire [31:0] wb_read_data_in   = hold ? read_data_wb : read_data_mem;
+    wire [31:0] wb_read_data_in  = hold ? read_data_wb : read_data_mem;
     wire [4:0]  wb_rd_in         = hold ? rd_wb : rd_mem;
     wire        wb_RegWrite_in   = hold ? RegWrite_wb : RegWrite_mem;
     wire        wb_MemtoReg_in   = hold ? MemtoReg_wb : MemtoReg_mem;
