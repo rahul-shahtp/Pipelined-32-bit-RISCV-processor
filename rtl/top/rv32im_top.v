@@ -25,8 +25,8 @@ module rv32im_top (
         .clk(clk),
         .rst(rst),
         .pc_if_stall(pc_if_stall),
-        .pc_in(pc_if),
-        .pc_out(pc_next)
+        .pc_in(pc_next),
+        .pc_out(pc_if)
     );
 
     pc_adder u_pc_adder (
@@ -35,7 +35,7 @@ module rv32im_top (
     );
 
     instr_mem u_instr_mem (
-        .address_n(address_if),
+        .address_n(pc_if),
         .instruction_o(instruction_if)
     );
 
