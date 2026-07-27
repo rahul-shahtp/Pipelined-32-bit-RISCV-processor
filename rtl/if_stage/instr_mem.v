@@ -6,7 +6,7 @@ module instr_mem (
     reg [31:0] memory [0:MAX_SIZE-1];
 
     initial begin
-        $readmemh("instruction.hex", memory);
+        $readmemh("hex/simple_add.hex", memory);
     end
 
     assign instruction_o = memory[address_n[11:2]];
