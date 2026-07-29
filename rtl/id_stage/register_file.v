@@ -14,8 +14,14 @@ module register_file (
 
     // register 0 is hardwired to zero
     always @(*) begin
-        rs1_data = (rs1_addr == 5'b0) ? 32'h0 : register[rs1_addr];
-        rs2_data = (rs2_addr == 5'b0) ? 32'h0 : register[rs2_addr];
+        // Write-through bypass makes a value written in WB visible to an
+        // instruction captured by ID on that same clock edge.
+        rs1_data = (rs1_addr == 5'b0) ? 32'h0 :
+                   ((RegWrite && (rd_addr != 5'b0) && (rd_addr == rs1_addr))
+                    ? rd_data : register[rs1_addr]);
+        rs2_data = (rs2_addr == 5'b0) ? 32'h0 :
+                   ((RegWrite && (rd_addr != 5'b0) && (rd_addr == rs2_addr))
+                    ? rd_data : register[rs2_addr]);
     end
 
     integer i;
