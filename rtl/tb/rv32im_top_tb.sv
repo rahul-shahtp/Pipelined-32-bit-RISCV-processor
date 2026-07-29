@@ -69,7 +69,9 @@ module rv32im_top_tb;
    
     // Reset behavior and Hex Execution
     task automatic run_hex_test(
-        input  string hex_file, 
+        input  string hex_file,
+        input  logic [4:0] expected_reg,
+        input  logic [31:0] expected_value,
         output bit    success
         );
     
@@ -95,14 +97,18 @@ module rv32im_top_tb;
         while (!finished && cycle_count < MAX_CYCLES) begin
             @(posedge clk);
             cycle_count++;
-            current_instr = dut.u_instr_mem.memory[dut.pc_if >> 2];
-    
-            if (current_instr == 32'h00100073) begin
-                if (dut.u_register_file.register[10] == 32'd1 || dut.u_register_file.register[10] == 32'd0) begin
-                    $display("[PASS] %s - EBREAK (x10 valid).", hex_file);
+            current_instr = dut.instruction_id;
+            if (current_instr == 32'h00100073 && !dut.hold) begin
+                // Let instructions ahead of EBREAK finish MEM and WB.
+                repeat (3) @(posedge clk);
+                if (dut.u_register_file.register[expected_reg] === expected_value) begin
+                    $display("[PASS] %s - x%0d = 0x%08h.",
+                             hex_file, expected_reg, expected_value);
                     success = 1'b1;
                 end else begin
-                    $display("[FAIL] %s - EBREAK Error (x10 = %0d).", hex_file, dut.u_register_file.register[10]);
+                    $display("[FAIL] %s - x%0d = 0x%08h, expected 0x%08h.",
+                             hex_file, expected_reg,
+                             dut.u_register_file.register[expected_reg], expected_value);
                     success = 1'b0;
                 end
                 finished = 1'b1;
@@ -119,13 +125,34 @@ module rv32im_top_tb;
 
     endtask
 
-    //---------------------------------------------------------
     // Regression tests using multiple .hex programs
-    //---------------------------------------------------------
     initial begin
         string test_suite [] = '{
-            "hex/simple_add.hex"
-        };
+            "hex/test_rtype.hex",
+            "hex/test_itype.hex",
+            "hex/test_loadstore.hex",
+            "hex/test_lui_auipc.hex",
+            "hex/test_mul.hex",
+            "hex/test_div.hex",
+            "hex/test_raw_back2back.hex",
+            "hex/test_raw_one_gap.hex",
+            "hex/test_load_use.hex",
+            "hex/test_x0_writeignore.hex",
+            "hex/test_branch_taken_nottaken.hex",
+            "hex/test_jal_jalr.hex",
+            "hex/test_branch_after_alu.hex",
+            "hex/test_stress_mixed.hex"
+            };
+        logic [4:0] expected_reg [] = '{
+            5'd10, 5'd11, 5'd12, 5'd4,  5'd16, 5'd22, 5'd6,
+            5'd10, 5'd5,  5'd3,  5'd3,  5'd10, 5'd3,  5'd12
+            };
+        logic [31:0] expected_value [] = '{
+            32'hffff_ffff, 32'hffff_fffb, 32'h0000_007f, 32'h0000_1010,
+            32'hffff_ffff, 32'h0000_0000, 32'h0000_0014, 32'h0000_0005,
+            32'h0000_1235, 32'h0000_007b, 32'h0000_0011, 32'h0000_0457,
+            32'h0000_0004, 32'h0000_0003
+            };
         
         int passed_tests = 0;
         int total_tests  = test_suite.size();
@@ -137,7 +164,7 @@ module rv32im_top_tb;
         $display("=================================================");
 
         foreach (test_suite[i]) begin
-            run_hex_test(test_suite[i], current_status);
+            run_hex_test(test_suite[i], expected_reg[i], expected_value[i], current_status);
             if (current_status) passed_tests++;
         end
 
