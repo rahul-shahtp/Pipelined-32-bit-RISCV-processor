@@ -38,6 +38,15 @@ module mul_div_unit (
     reg [31:0] divisor_u;
     reg [31:0] dividend_u;
     reg [63:0] macc;
+    reg [31:0] operand_a_r;
+    reg [31:0] operand_b_r;
+
+    wire signed [63:0] operand_a_signed = {{32{operand_a_r[31]}}, operand_a_r};
+    wire signed [63:0] operand_b_signed = {{32{operand_b_r[31]}}, operand_b_r};
+    wire signed [63:0] operand_b_unsigned = {32'b0, operand_b_r};
+    wire signed [63:0] product_ss = operand_a_signed * operand_b_signed;
+    wire signed [63:0] product_su = operand_a_signed * operand_b_unsigned;
+    wire        [63:0] product_uu = {32'b0, operand_a_r} * {32'b0, operand_b_r};
 
     // 1. Sign Extraction & Absolute Values
     wire a_is_signed = (op == MUL || op == MULH || op == MULHSU || op == DIV || op == REM);
@@ -69,6 +78,8 @@ module mul_div_unit (
             done    <= 1'b0;
             counter <= 6'h0;
             result  <= 32'h0;
+            operand_a_r <= 32'h0;
+            operand_b_r <= 32'h0;
         end else begin
             case (state)
 
@@ -88,6 +99,8 @@ module mul_div_unit (
                     div_by_zero     <= is_div_zero;
                     signed_overflow <= is_overflow;
                     macc            <= {32'b0, abs_a};
+                    operand_a_r     <= operand_a;
+                    operand_b_r     <= operand_b;
                     state           <= COMPUTE;
                 end
             end
@@ -125,8 +138,10 @@ module mul_div_unit (
                 if (!op_r[2]) begin
                     //multiply result
                     case (op_r)
-                        MUL:     result <= final_mul[31:0];
-                        default: result <= final_mul[63:32]; // MULH, MULHSU, MULHU
+                        MUL:    result <= product_uu[31:0];
+                        MULH:   result <= product_ss[63:32];
+                        MULHSU: result <= product_su[63:32];
+                        MULHU:  result <= product_uu[63:32];
                     endcase
                 end else begin
                     //divide result
