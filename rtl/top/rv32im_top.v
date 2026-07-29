@@ -6,6 +6,7 @@ module rv32im_top (
     localparam OP_JALR  = 7'b1100111;
     localparam OP_LUI   = 7'b0110111;
     localparam OP_AUIPC = 7'b0010111;
+    localparam OP_RTYPE = 7'b0110011;
 
     // IF-STAGE
 
@@ -203,7 +204,7 @@ module rv32im_top (
         .rst(rst),
         .bubble(bubble),
         .hold(hold),
-        .flush(flush),
+        .flush(1'b0),
         .pc_id(pc_id),
         .pc_plus4_id(pc_plus4_id),
         .rs1_id(rs1_id),
@@ -287,6 +288,7 @@ module rv32im_top (
         .ALUopCode(ALUopCode_ex),
         .funct3(funct3_ex),
         .funct7_5thBIT(funct7_5thBIT_ex),
+        .is_rtype(opcode_ex == OP_RTYPE),
         .is_mul_div(ex_is_mul_div),
         .alu_op(alu_op)
     );
