@@ -2,6 +2,7 @@ module alu_control (
     input      [1:0] ALUopCode,
     input      [2:0] funct3,
     input            funct7_5thBIT,
+    input            is_rtype,
     input            is_mul_div,
     output reg [3:0] alu_op
 );
@@ -31,8 +32,7 @@ module alu_control (
 
             2'b10 : begin
                 case (funct3)
-                    
-                    3'b000: alu_op = (funct7_5thBIT) ? ALU_SUB : ALU_ADD; 
+                    3'b000: alu_op = (is_rtype && funct7_5thBIT) ? ALU_SUB : ALU_ADD;
                     3'b001: alu_op = ALU_SLL;
                     3'b010: alu_op = ALU_SLT;
                     3'b011: alu_op = ALU_SLTU;
@@ -53,4 +53,3 @@ module alu_control (
     end
 
 endmodule
-
