@@ -141,17 +141,20 @@ module rv32im_top_tb;
             "hex/test_branch_taken_nottaken.hex",
             "hex/test_jal_jalr.hex",
             "hex/test_branch_after_alu.hex",
-            "hex/test_stress_mixed.hex"
+            "hex/test_stress_mixed.hex",
+            "hex/test_factorial.hex",
+            "hex/test_fibonacci.hex"
             };
         logic [4:0] expected_reg [] = '{
             5'd10, 5'd11, 5'd12, 5'd4,  5'd16, 5'd22, 5'd6,
-            5'd10, 5'd5,  5'd3,  5'd3,  5'd10, 5'd3,  5'd12
+            5'd10, 5'd5 ,  5'd3, 5'd3,  5'd10, 5'd3 , 5'd12,
+            5'd5 , 5'd10
             };
         logic [31:0] expected_value [] = '{
             32'hffff_ffff, 32'hffff_fffb, 32'h0000_007f, 32'h0000_1010,
             32'hffff_ffff, 32'h0000_0000, 32'h0000_0014, 32'h0000_0005,
             32'h0000_1235, 32'h0000_007b, 32'h0000_0011, 32'h0000_0457,
-            32'h0000_0004, 32'h0000_0003
+            32'h0000_0004, 32'h0000_0003, 32'h0000_13b0, 32'h000_0037
             };
         
         int passed_tests = 0;
