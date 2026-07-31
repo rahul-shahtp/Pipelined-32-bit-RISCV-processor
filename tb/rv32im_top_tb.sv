@@ -81,7 +81,7 @@ module rv32im_top_tb;
         success = 1'b0;
     
         $display("\n-------------------------------------------------");
-        $display("[RUNNING] Test: %s", hex_file);
+        $display("[RUNNING] Test: %s at time %0t", hex_file, $time);
     
         for (int i = 0; i < MEM_WORDS; i++) begin
             dut.u_instr_mem.memory[i]   = 32'h00000000;
