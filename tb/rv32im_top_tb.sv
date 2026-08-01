@@ -128,22 +128,40 @@ module rv32im_top_tb;
     // Regression tests using multiple .hex programs
     initial begin
         string test_suite [] = '{
-            "hex/test_rtype.hex",
-            "hex/test_itype.hex",
-            "hex/test_loadstore.hex",
-            "hex/test_lui_auipc.hex",
-            "hex/test_mul.hex",
-            "hex/test_div.hex",
-            "hex/test_raw_back2back.hex",
-            "hex/test_raw_one_gap.hex",
-            "hex/test_load_use.hex",
-            "hex/test_x0_writeignore.hex",
-            "hex/test_branch_taken_nottaken.hex",
-            "hex/test_jal_jalr.hex",
-            "hex/test_branch_after_alu.hex",
-            "hex/test_stress_mixed.hex",
-            "hex/test_factorial.hex",
-            "hex/test_fibonacci.hex"
+            // for this project , the .hex files are located in the "hex" directory
+              "hex/test_rtype.hex",
+              "hex/test_itype.hex",
+              "hex/test_loadstore.hex",
+              "hex/test_lui_auipc.hex",
+              "hex/test_mul.hex",
+              "hex/test_div.hex",
+              "hex/test_raw_back2back.hex",
+              "hex/test_raw_one_gap.hex",
+              "hex/test_load_use.hex",
+              "hex/test_x0_writeignore.hex",
+              "hex/test_branch_taken_nottaken.hex",
+              "hex/test_jal_jalr.hex",
+              "hex/test_branch_after_alu.hex",
+              "hex/test_stress_mixed.hex",
+              "hex/test_factorial.hex",
+              "hex/test_fibonacci.hex"
+              // for Vivado simulation , use absolute paths to the .hex files
+             // "/home/proper_path/hex/test_rtype.hex",
+             // "/home/proper_path/hex/test_itype.hex",
+             // "/home/proper_path/hex/test_loadstore.hex",
+             // "/home/proper_path/hex/test_lui_auipc.hex",
+             // "/home/proper_path/hex/test_mul.hex",
+             // "/home/proper_path/hex/test_div.hex",
+             // "/home/proper_path/hex/test_raw_back2back.hex",
+             // "/home/proper_path/hex/test_raw_one_gap.hex",
+             // "/home/proper_path/hex/test_load_use.hex",
+             // "/home/proper_path/hex/test_x0_writeignore.hex",
+             // "/home/proper_path/hex/test_branch_taken_nottaken.hex",
+             // "/home/proper_path/hex/test_jal_jalr.hex",
+             // "/home/proper_path/hex/test_branch_after_alu.hex",
+             // "/home/proper_path/hex/test_stress_mixed.hex",
+             // "/home/proper_path/hex/test_factorial.hex",
+             // "/home/proper_path/hex/test_fibonacci.hex"
             };
         logic [4:0] expected_reg [] = '{
             5'd10, 5'd11, 5'd12, 5'd4,  5'd16, 5'd22, 5'd6,
