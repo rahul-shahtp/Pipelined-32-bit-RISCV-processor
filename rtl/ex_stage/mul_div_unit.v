@@ -70,7 +70,37 @@ module mul_div_unit (
     wire is_div_zero = (operand_b == 32'b0);
     wire is_overflow = ((op == DIV || op == REM) && 
                         (operand_a == 32'h8000_0000) && (operand_b == 32'hFFFF_FFFF));
-    
+
+    // --- Combinational result selection (pulled out of DONE case for proc_dff) ---
+    reg [31:0] mul_result_c;
+    always @(*) begin
+        case (op_r)
+            MUL:     mul_result_c = product_uu[31:0];
+            MULH:    mul_result_c = product_ss[63:32];
+            MULHSU:  mul_result_c = product_su[63:32];
+            MULHU:   mul_result_c = product_uu[63:32];
+            default: mul_result_c = 32'h0;
+        endcase
+    end
+
+    reg [31:0] div_result_c;
+    always @(*) begin
+        if (div_by_zero) begin
+            div_result_c = (op_r == DIV || op_r == DIVU) ? 32'hFFFF_FFFF
+                            : (dividend_neg ? (~dividend_u + 1'b1) : dividend_u);
+        end else if (signed_overflow) begin
+            div_result_c = (op_r == DIV) ? 32'h8000_0000 : 32'b0;
+        end else begin
+            case (op_r)
+                DIV:     div_result_c = (dividend_neg ^ divisor_neg) ? (~macc[31:0] + 1'b1) : macc[31:0];
+                DIVU:    div_result_c = macc[31:0];
+                REM:     div_result_c = dividend_neg ? (~macc[63:32] + 1'b1) : macc[63:32];
+                REMU:    div_result_c = macc[63:32];
+                default: div_result_c = 32'h0;
+            endcase
+        end
+    end
+
     always @(posedge clk or posedge rst) begin
         if (rst || abort) begin
             state   <= IDLE;
@@ -131,36 +161,10 @@ module mul_div_unit (
             end
 
             DONE: begin
-                busy  <= 1'b0;
-                done  <= 1'b1;
-                state <= IDLE;
-
-                if (!op_r[2]) begin
-                    //multiply result
-                    case (op_r)
-                        MUL:    result <= product_uu[31:0];
-                        MULH:   result <= product_ss[63:32];
-                        MULHSU: result <= product_su[63:32];
-                        MULHU:  result <= product_uu[63:32];
-                    endcase
-                end else begin
-                    //divide result
-                    if (div_by_zero) begin
-                        result <= (op_r == DIV || op_r == DIVU) ? 32'hFFFF_FFFF
-                                    : (dividend_neg ? (~dividend_u + 1'b1) : dividend_u);
-                    end else if (signed_overflow) begin
-                        result <= (op_r == DIV) ? 32'h8000_0000 : 32'b0;
-                    end else begin
-                        // macc[31:0]  = Quotient
-                        // macc[63:32] = Remainder
-                        case (op_r)
-                            DIV:  result <= (dividend_neg ^ divisor_neg) ? (~macc[31:0] + 1'b1)  : macc[31:0];
-                            DIVU: result <= macc[31:0];
-                            REM:  result <= dividend_neg                 ? (~macc[63:32] + 1'b1) : macc[63:32];
-                            REMU: result <= macc[63:32];
-                        endcase
-                    end
-                end
+                busy   <= 1'b0;
+                done   <= 1'b1;
+                state  <= IDLE;
+                result <= op_r[2] ? div_result_c : mul_result_c;
             end
 
             endcase
