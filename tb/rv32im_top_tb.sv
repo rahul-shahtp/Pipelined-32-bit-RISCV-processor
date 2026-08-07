@@ -85,7 +85,7 @@ module rv32im_top_tb;
     
         for (int i = 0; i < MEM_WORDS; i++) begin
             dut.u_instr_mem.memory[i]   = 32'h00000000;
-            dut.u_data_memory.memory[i] = 32'h00000000;
+            dut.u_data_memory.u_data_sram.memory[i] = 32'h00000000;
         end
     
         $readmemh(hex_file, dut.u_instr_mem.memory);
