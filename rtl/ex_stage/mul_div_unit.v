@@ -38,15 +38,6 @@ module mul_div_unit (
     reg [31:0] divisor_u;
     reg [31:0] dividend_u;
     reg [63:0] macc;
-    reg [31:0] operand_a_r;
-    reg [31:0] operand_b_r;
-
-    wire signed [63:0] operand_a_signed = {{32{operand_a_r[31]}}, operand_a_r};
-    wire signed [63:0] operand_b_signed = {{32{operand_b_r[31]}}, operand_b_r};
-    wire signed [63:0] operand_b_unsigned = {32'b0, operand_b_r};
-    wire signed [63:0] product_ss = operand_a_signed * operand_b_signed;
-    wire signed [63:0] product_su = operand_a_signed * operand_b_unsigned;
-    wire        [63:0] product_uu = {32'b0, operand_a_r} * {32'b0, operand_b_r};
 
     // 1. Sign Extraction & Absolute Values
     wire a_is_signed = (op == MUL || op == MULH || op == MULHSU || op == DIV || op == REM);
@@ -75,10 +66,10 @@ module mul_div_unit (
     reg [31:0] mul_result_c;
     always @(*) begin
         case (op_r)
-            MUL:     mul_result_c = product_uu[31:0];
-            MULH:    mul_result_c = product_ss[63:32];
-            MULHSU:  mul_result_c = product_su[63:32];
-            MULHU:   mul_result_c = product_uu[63:32];
+            MUL:     mul_result_c = final_mul[31:0];
+            MULH:    mul_result_c = final_mul[63:32];
+            MULHSU:  mul_result_c = final_mul[63:32];
+            MULHU:   mul_result_c = final_mul[63:32];
             default: mul_result_c = 32'h0;
         endcase
     end
@@ -102,14 +93,18 @@ module mul_div_unit (
     end
 
     always @(posedge clk or posedge rst) begin
-        if (rst || abort) begin
-            state   <= IDLE;
-            busy    <= 1'b0;
-            done    <= 1'b0;
-            counter <= 6'h0;
-            result  <= 32'h0;
-            operand_a_r <= 32'h0;
-            operand_b_r <= 32'h0;
+        if (rst) begin
+            state       <= IDLE;
+            busy        <= 1'b0;
+            done        <= 1'b0;
+            counter     <= 6'h0;
+            result      <= 32'h0;
+        end else if (abort) begin
+            state       <= IDLE;
+            busy        <= 1'b0;
+            done        <= 1'b0;
+            counter     <= 6'h0;
+            result      <= 32'h0;
         end else begin
             case (state)
 
@@ -129,8 +124,6 @@ module mul_div_unit (
                     div_by_zero     <= is_div_zero;
                     signed_overflow <= is_overflow;
                     macc            <= {32'b0, abs_a};
-                    operand_a_r     <= operand_a;
-                    operand_b_r     <= operand_b;
                     state           <= COMPUTE;
                 end
             end
