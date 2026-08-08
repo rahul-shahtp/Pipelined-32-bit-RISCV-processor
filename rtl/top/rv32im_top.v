@@ -1,6 +1,12 @@
 module rv32im_top (
     input clk,
-    input rst
+    input rst,
+    // Architectural write-back interface. These optional observability
+    // signals let an ASIC wrapper expose useful outputs without reaching
+    // into the core hierarchy.
+    output        commit_valid,
+    output [4:0]  commit_rd,
+    output [31:0] commit_data
 );
 
     localparam OP_JALR  = 7'b1100111;
@@ -236,7 +242,7 @@ module rv32im_top (
         .imm_ex(imm_ex),
         .funct3_ex(funct3_ex),
         .funct7_5thBIT_ex(funct7_5thBIT_ex),
-        .is_mul_div_ex(ex_is_mul_div),
+        .is_mul_div_ex(ex_is// A write to x0 is architecturally ignored, so it is not a committed_mul_div),
         .mul_div_op_ex(mul_div_op_ex),
         .RegWrite_ex(RegWrite_ex),
         .MemWrite_ex(MemWrite_ex),
@@ -402,5 +408,9 @@ module rv32im_top (
         .write_data_wb(write_data_wb)
     );
 
+    // register-file update at the chip boundary.
+    assign commit_valid = RegWrite_wb && (rd_wb != 5'd0);
+    assign commit_rd    = rd_wb;
+    assign commit_data  = write_data_wb;
 
 endmodule   
