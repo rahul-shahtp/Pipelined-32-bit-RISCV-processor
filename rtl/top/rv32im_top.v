@@ -242,7 +242,7 @@ module rv32im_top (
         .imm_ex(imm_ex),
         .funct3_ex(funct3_ex),
         .funct7_5thBIT_ex(funct7_5thBIT_ex),
-        .is_mul_div_ex(ex_is// A write to x0 is architecturally ignored, so it is not a committed_mul_div),
+        .is_mul_div_ex(ex_is),
         .mul_div_op_ex(mul_div_op_ex),
         .RegWrite_ex(RegWrite_ex),
         .MemWrite_ex(MemWrite_ex),
