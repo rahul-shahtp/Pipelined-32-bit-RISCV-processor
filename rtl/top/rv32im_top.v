@@ -242,7 +242,7 @@ module rv32im_top (
         .imm_ex(imm_ex),
         .funct3_ex(funct3_ex),
         .funct7_5thBIT_ex(funct7_5thBIT_ex),
-        .is_mul_div_ex(ex_is),
+        .is_mul_div_ex(ex_is_mul_div),
         .mul_div_op_ex(mul_div_op_ex),
         .RegWrite_ex(RegWrite_ex),
         .MemWrite_ex(MemWrite_ex),
