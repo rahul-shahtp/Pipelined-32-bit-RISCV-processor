@@ -19,8 +19,7 @@ module data_memory (
     wire [31:0] word_data;
 
 `ifndef SYNTHESIS
-    // The CPU needs combinational load data in its existing MEM-stage timing.
-    // Retain this model for RTL simulation and testbench memory initialization.
+    //for RTL simulation and testbench memory initialization.
     reg [31:0] memory [0:1023];
 
     always @(posedge clk) begin
@@ -34,21 +33,35 @@ module data_memory (
 
     assign word_data = memory[word_address];
 `else
-    // Exactly one 1024 x 32 macro.  wmask0 provides one write enable per byte.
+    // Four SkyWater 1 Kbyte 1RW1R macros (8 bits each) build the 1024 x 32
+    wire [31:0] q_lanes;
 
-     sky130_sram_1024x32 u_data_sram (
-        .clk0(clk),
-        .csb0(~(MemRead | MemWrite)),
-        .web0(~MemWrite),
-        .wmask0(write_mask),
-        .addr0(word_address),
-        .din0(write_data),
-        .dout0(word_data),
-        .clk1(clk),
-        .csb1(1'b1),
-        .addr1(10'b0),
-        .dout1()
-    );
+    genvar g;
+    generate
+        for (g = 0; g < 4; g = g + 1) begin : byte_lane
+            sky130_sram_1kbyte_1rw1r_8x1024_8 u_sram_lane (
+                .CLK0(clk),
+                .CEN0(~(MemRead | MemWrite)),  // chip enable, active low
+                .WEN0(~MemWrite),              // write enable, active low
+                .WMASKO(write_mask[g]),
+                .A0(word_address),
+                .D(write_data[g*8 +: 8]),
+                .Q(q_lanes[g*8 +: 8]),
+                .CLK1(clk),
+                .CEN1(1'b1),                   // second port unused
+                .A1(10'b0),
+                .Q1(),
+                .ABIST_CLK0(1'b0),             // BIST test pins tied off
+                .ABIST_WA0(1'b0),
+                .ABIST_WEN0(1'b0),
+                .ABIST_WDATA0(1'b0),
+                .ABIST_WMASK0(1'b0),
+                .ABIST_RDATA0()
+            );
+        end
+    endgenerate
+
+    assign word_data = q_lanes;
 `endif
 
     wire [7:0]  byte_data = (address[1:0] == 2'b00) ? word_data[7:0]   :
