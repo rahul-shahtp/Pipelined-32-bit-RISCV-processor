@@ -1,0 +1,30 @@
+# Yosys synthesis script - Pipelined 32-bit RV32IM -> sky130_fd_sc_hd
+# Usage: yosys -s synth/sky130_synth.ys
+#
+# Notes:
+#  - `SYNTHESIS` is defined so:
+#      * data_memory instantiates the OpenRAM replacement blackbox
+#        (sky130_sram_1024x32) instead of the simulation-only model;
+#      * instr_mem loads its ROM contents from the program hex file and is
+#        synthesized as initialized logic (flops + mux).
+#  - The program image is baked into the ROM by instr_mem.v (one line).
+#    Edit the $readmemh path there to synthesize a different test program.
+#  - sky130_sram_1024x32 is kept as a blackbox: the generated netlist is
+#    meant to be stitched with the real OpenRAM 1024x32 macro in P&R
+
+read_liberty -lib lib/sky130_hd_no_lpflow.lib
+read_verilog -D SYNTHESIS rtl/*/*.v
+hierarchy -check -top rv32im_asic
+
+synth -top rv32im_asic -flatten
+
+dfflibmap -liberty lib/sky130_hd_no_lpflow.lib
+
+abc -liberty lib/sky130_hd_no_lpflow.lib
+
+clean -purge
+
+stat -liberty lib/sky130_hd_no_lpflow.lib
+
+# Gate-level netlist (SRAM left as blackbox instance)
+write_verilog -noattr synth_out/rv32im_asic_sky130.v
