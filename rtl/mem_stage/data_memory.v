@@ -40,23 +40,19 @@ module data_memory (
     generate
         for (g = 0; g < 4; g = g + 1) begin : byte_lane
             sky130_sram_1kbyte_1rw1r_8x1024_8 u_sram_lane (
-                .CLK0(clk),
-                .CEN0(~(MemRead | MemWrite)),  // chip enable, active low
-                .WEN0(~MemWrite),              // write enable, active low
-                .WMASKO(write_mask[g]),
-                .A0(word_address),
-                .D(write_data[g*8 +: 8]),
-                .Q(q_lanes[g*8 +: 8]),
-                .CLK1(clk),
-                .CEN1(1'b1),                   // second port unused
-                .A1(10'b0),
-                .Q1(),
-                .ABIST_CLK0(1'b0),             // BIST test pins tied off
-                .ABIST_WA0(1'b0),
-                .ABIST_WEN0(1'b0),
-                .ABIST_WDATA0(1'b0),
-                .ABIST_WMASK0(1'b0),
-                .ABIST_RDATA0()
+                .clk0(clk),
+                .csb0(~(MemRead | MemWrite)),  // chip select, active low
+                .web0(~MemWrite),              // write enable, active low
+                .wmask0(write_mask[g]),        // write mask (1 = write this byte lane)
+                .addr0(word_address),
+                .din0(write_data[g*8 +: 8]),
+                .dout0(q_lanes[g*8 +: 8]),
+                .clk1(clk),
+                .csb1(1'b1),                   // read port disabled
+                .addr1(10'b0),
+                .dout1(),                      // read port unused
+                .vccd1(1'b1),                  // power - overridden by global net VDD
+                .vssd1(1'b0)                   // ground - overridden by global net VSS
             );
         end
     endgenerate
