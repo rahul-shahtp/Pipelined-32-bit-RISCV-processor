@@ -1,0 +1,95 @@
+Startpoint: _13469_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: _13506_ (rising edge-triggered flip-flop clocked by clk)
+Path Group: clk
+Path Type: max
+
+  Delay    Time   Description
+---------------------------------------------------------
+   0.00    0.00   clock clk (rise edge)
+   1.10    1.10   clock network delay (propagated)
+   0.00    1.10 ^ _13469_/CLK (sky130_fd_sc_hd__dfrtp_4)
+   0.59    1.69 v _13469_/Q (sky130_fd_sc_hd__dfrtp_4)
+   0.59    2.28 v _06227_/X (sky130_fd_sc_hd__or4_4)
+   0.21    2.49 ^ _06228_/Y (sky130_fd_sc_hd__o21ai_4)
+   0.17    2.66 v _06229_/Y (sky130_fd_sc_hd__clkinv_4)
+   0.23    2.89 v _08185_/X (sky130_fd_sc_hd__and3_4)
+   0.13    3.02 ^ _08473_/Y (sky130_fd_sc_hd__a21oi_4)
+   0.16    3.19 ^ _08478_/X (sky130_fd_sc_hd__o31a_1)
+   0.09    3.27 v _08479_/Y (sky130_fd_sc_hd__nand3_2)
+   0.34    3.61 v _08480_/X (sky130_fd_sc_hd__maj3_2)
+   0.32    3.93 v _08482_/X (sky130_fd_sc_hd__maj3_2)
+   0.32    4.26 v _08483_/X (sky130_fd_sc_hd__maj3_2)
+   0.33    4.59 v _08484_/X (sky130_fd_sc_hd__maj3_2)
+   0.31    4.90 v _08485_/X (sky130_fd_sc_hd__maj3_2)
+   0.31    5.21 v _08486_/X (sky130_fd_sc_hd__maj3_2)
+   0.36    5.57 v _08487_/X (sky130_fd_sc_hd__maj3_2)
+   0.32    5.89 v _08488_/X (sky130_fd_sc_hd__maj3_2)
+   0.32    6.21 v _08489_/X (sky130_fd_sc_hd__maj3_2)
+   0.31    6.52 v _08490_/X (sky130_fd_sc_hd__maj3_2)
+   0.31    6.83 v _08491_/X (sky130_fd_sc_hd__maj3_2)
+   0.31    7.14 v _08492_/X (sky130_fd_sc_hd__maj3_2)
+   0.31    7.44 v _08493_/X (sky130_fd_sc_hd__maj3_2)
+   0.33    7.77 v _08494_/X (sky130_fd_sc_hd__maj3_2)
+   0.40    8.17 v _08495_/X (sky130_fd_sc_hd__maj3_2)
+   0.36    8.54 v _08496_/X (sky130_fd_sc_hd__maj3_2)
+   0.33    8.86 v _08497_/X (sky130_fd_sc_hd__maj3_2)
+   0.33    9.19 v _08498_/X (sky130_fd_sc_hd__maj3_2)
+   0.32    9.51 v _08499_/X (sky130_fd_sc_hd__maj3_2)
+   0.33    9.84 v _08500_/X (sky130_fd_sc_hd__maj3_2)
+   0.33   10.17 v _08501_/X (sky130_fd_sc_hd__maj3_2)
+   0.32   10.50 v _08502_/X (sky130_fd_sc_hd__maj3_2)
+   0.39   10.89 v _08503_/X (sky130_fd_sc_hd__maj3_2)
+   0.35   11.24 v _08504_/X (sky130_fd_sc_hd__maj3_2)
+   0.32   11.56 v _08505_/X (sky130_fd_sc_hd__maj3_2)
+   0.32   11.88 v _08506_/X (sky130_fd_sc_hd__maj3_2)
+   0.32   12.20 v _08507_/X (sky130_fd_sc_hd__maj3_2)
+   0.32   12.53 v _08508_/X (sky130_fd_sc_hd__maj3_2)
+   0.34   12.87 v _08509_/X (sky130_fd_sc_hd__maj3_2)
+   0.13   13.00 ^ _08552_/Y (sky130_fd_sc_hd__a21boi_1)
+   0.09   13.09 v _08553_/Y (sky130_fd_sc_hd__o211ai_1)
+   0.17   13.26 ^ _08554_/Y (sky130_fd_sc_hd__a21oi_1)
+   0.07   13.33 v _08555_/Y (sky130_fd_sc_hd__o21ai_1)
+   0.00   13.33 v _13506_/D (sky130_fd_sc_hd__dfrtp_1)
+          13.33   data arrival time
+
+  10.00   10.00   clock clk (rise edge)
+   1.20   11.20   clock network delay (propagated)
+   0.00   11.20   clock reconvergence pessimism
+          11.20 ^ _13506_/CLK (sky130_fd_sc_hd__dfrtp_1)
+  -0.16   11.05   library setup time
+          11.05   data required time
+---------------------------------------------------------
+          11.05   data required time
+         -13.33   data arrival time
+---------------------------------------------------------
+          -2.29   slack (VIOLATED)
+
+
+Startpoint: _13509_ (rising edge-triggered flip-flop clocked by clk)
+Endpoint: u_rv32im_top.u_data_memory.byte_lane[0].u_sram_lane
+          (falling edge-triggered flip-flop clocked by clk)
+Path Group: clk
+Path Type: min
+
+  Delay    Time   Description
+---------------------------------------------------------
+   0.00    0.00   clock clk (rise edge)
+   1.12    1.12   clock network delay (propagated)
+   0.00    1.12 ^ _13509_/CLK (sky130_fd_sc_hd__dfrtp_1)
+   0.35    1.47 ^ _13509_/Q (sky130_fd_sc_hd__dfrtp_1)
+   0.00    1.47 ^ u_rv32im_top.u_data_memory.byte_lane[0].u_sram_lane/din0[1] (sky130_sram_1kbyte_1rw1r_8x1024_8)
+           1.47   data arrival time
+
+   0.00    0.00   clock clk (rise edge)
+   1.12    1.12   clock network delay (propagated)
+   0.00    1.12   clock reconvergence pessimism
+           1.12 ^ u_rv32im_top.u_data_memory.byte_lane[0].u_sram_lane/clk0 (sky130_sram_1kbyte_1rw1r_8x1024_8)
+  -0.06    1.07   library hold time
+           1.07   data required time
+---------------------------------------------------------
+           1.07   data required time
+          -1.47   data arrival time
+---------------------------------------------------------
+           0.40   slack (MET)
+
+
