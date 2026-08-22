@@ -1,0 +1,5 @@
+# OpenROAD and Yosys generated output
+drc.rpt
+reports/
+results/
+synth_out/
