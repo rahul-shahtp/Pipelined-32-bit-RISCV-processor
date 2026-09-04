@@ -5,7 +5,7 @@
 [![Yosys](https://img.shields.io/badge/Synthesis-Yosys-orange.svg)](https://github.com/YosysHQ/yosys)
 [![OpenROAD](https://img.shields.io/badge/P%26R-OpenROAD-red.svg)](https://github.com/The-OpenROAD-Project/OpenROAD)
 [![OpenRAM](https://img.shields.io/badge/SRAM_Compiler-OpenRAM-blueviolet.svg)](https://github.com/VLSIDA/OpenRAM)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-LGPL--2.1-blue.svg)](LICENSE)
 
 A complete RTL-to-GDS implementation of a **5-stage pipelined RV32IM core** (RV32I base ISA + M-extension for integer multiplication/division) in Verilog, verified with SystemVerilog testbenches and taken through full physical implementation using the open-source Sky130 PDK.
 
@@ -203,4 +203,5 @@ openroad -no_init -exit flow.tcl
 
 ## 📄 License
 
-MIT License — see [LICENSE](LICENSE) for details.
+Copyright © 2026 Rahul Shah. Licensed under the GNU Lesser General Public License v2.1 — see [LICENSE](LICENSE) for details.
+Project-specific copyright and licensing notice: [NOTICE](NOTICE).
