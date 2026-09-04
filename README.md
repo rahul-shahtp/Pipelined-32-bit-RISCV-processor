@@ -204,4 +204,3 @@ openroad -no_init -exit flow.tcl
 ## 📄 License
 
 Copyright © 2026 Rahul Shah. Licensed under the GNU Lesser General Public License v2.1 — see [LICENSE](LICENSE) for details.
-Project-specific copyright and licensing notice: [NOTICE](NOTICE).
