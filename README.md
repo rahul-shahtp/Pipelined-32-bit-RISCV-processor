@@ -155,9 +155,9 @@ openram.py myconfig_sky130.py   # emits .v / .lib / .lef / .gds / .sp
 ├── docs/
     ├── design/             # Design documentation
     ├── Klayout_view/       # Layout screenshots
+    ├── openROAD_view/      # OpenROAD screenshots
     └── waveforms/          # Simulation waveforms
 ```
-
 ---
 
 ## 🚀 How to Run
@@ -198,6 +198,13 @@ openroad -no_init -exit flow.tcl
 
 ## 🔮 Future Work
 - **AI Accelerator Extension** — integrate a systolic-array MAC coprocessor for matrix multiply, connected via memory-mapped I/O to the RV32IM core
+
+---
+
+## 🔗 Project Links
+
+- **OpenCores:** https://opencores.org/projects/rv32im-pipelined (SVN trunk, tag `v1.0-alpha`, LGPL-2.1)
+- **Status:** Alpha — 16/16 tests pass, 0 DRC, WNS open (see [LIMITATIONS.md](LIMITATIONS.md))
 
 ---
 
