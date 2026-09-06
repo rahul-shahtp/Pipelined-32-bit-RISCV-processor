@@ -210,4 +210,28 @@ openroad -no_init -exit flow.tcl
 
 ## 📄 License
 
-Copyright © 2026 Rahul Shah. Licensed under the GNU Lesser General Public License v3.0 — see [LICENSE](LICENSE) for details.
+Copyright © 2026 Rahul Shah <shahrahul@opencores.org>. Licensed under the **GNU Lesser General Public License v3.0** — see [LICENSE](LICENSE) for details.
+
+### How to Apply These Terms to Source Files
+
+If you contribute to or redistribute this software, attach the following notice to each source file (typically at the top):
+
+```verilog
+// Pipelined 32-bit RISC-V (RV32IM) Processor — a five-stage pipelined
+// Verilog processor core.
+// Copyright (C) 2026 Rahul Shah <shahrahul@opencores.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 3 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+```
